@@ -1,4 +1,0 @@
-select a.id, a.transdate, a.symbolid, s.exchange, s.name, a.qty, a.amount from sharesbuy a, symbols s where a.symbolid=s.id
-
-
-select a.symbolid, s.exchange, s.name, sum(a.qty), sum(a.amount) from sharesbuy a, symbols s where a.symbolid=s.id GROUP by a.symbolid ORDER by s.exchange DESC, s.name ASC

@@ -33,6 +33,10 @@ class ListSymbols:
         for keys, values in syms.items():
             symlist.append([keys, values["exchange"], values["name"]])
 
+        if len(symlist) < 1:
+            sg.PopupOK("Please add atleast 1 symbol", title="NO SYMBOLS FOUND")
+            return
+
         layout.append([
             sg.Table(values=symlist, headings=["ID", "Exchange", "Company"],
                      auto_size_columns=True,  display_row_numbers=True,

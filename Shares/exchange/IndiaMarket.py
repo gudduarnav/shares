@@ -69,7 +69,6 @@ class NSEMarket(ExchangeDriver):
         try:
             self.q = nse.get_quote(self.getSymbol())
 
-
             for index in range(1,6):
                 buy_price = self.q["buyPrice{}".format(index)]
                 buy_qty = self.q["buyQuantity{}".format(index)]

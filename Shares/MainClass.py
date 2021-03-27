@@ -16,6 +16,9 @@ import EditTransaction
 import EditLiveSymbols
 import ShowLiveShares
 import NewRemarks
+import ListRemarks
+import savetoexcel
+
 
 class MainClass:
     def __init__(self, db=None):
@@ -52,7 +55,16 @@ class MainClass:
             ],
             [
               sg.Button("New Remarks", key="NEWREMARKS"),
-              sg.Button("Show All Remarks", key="SHOWREMARKS")
+              sg.Button("Show All Remarks", key="SHOWREMARKSALL"),
+                sg.Button("Show Remarks by DATE", key="SHOWREMARKS")
+            ],
+            [
+              sg.Text("-"*170)
+            ],
+            [
+              sg.Button("SAVE TO FILE: All Transactions", key="SAVEALL"),
+              sg.Button("SAVE TO FILE: Transactions between date", key="SAVEDATE"),
+              sg.Button("SAVE TO FILE: Holdings/Buy/Sell", key="SAVEHOLDINGS")
             ],
             [
               sg.Text("-"*170)
@@ -105,7 +117,19 @@ class MainClass:
             NewRemarks.NewRemarks(db = self.db)
             return True
         elif event == "SHOWREMARKS":
-            print("Show Remarks")
+            ListRemarks.ListRemarks(v=False, db=self.db)
+            return True
+        elif event == "SHOWREMARKSALL":
+            ListRemarks.ListRemarks(v=True, db=self.db)
+            return True
+        elif event == "SAVEALL":
+            savetoexcel.saveAllTransactions(db=self.db)
+            return True
+        elif event == "SAVEDATE":
+            savetoexcel.saveTransactionsSelectDate(db=self.db)
+            return True
+        elif event == "SAVEHOLDINGS":
+            savetoexcel.saveAllHoldings(db=self.db)
             return True
 def main():
     MainClass()
