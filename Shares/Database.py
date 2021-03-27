@@ -744,7 +744,7 @@ class Database:
 
     # Remarks
     def createRemarks(self):
-        q = "create table remarks(id char(32) primary key not null, transdate date not null, particulars char(128))"
+        q = "create table remarks(id char(32) primary key not null, transdate date not null, particulars char(256))"
         if self.checkTable("remarks"):
             return True
 
@@ -763,7 +763,7 @@ class Database:
 
         _transdate = createSQLDate(dd, mm, yy)
         _id = generatekey(timestampnow())
-        _rem = particulars[0:min([128, len(particulars)])]
+        _rem = particulars[0:min([256, len(particulars)])]
         q = "insert into remarks(id, transdate, particulars) values('{}','{}','{}')".format(_id, _transdate, _rem)
         try:
             self.db.execute(q)
@@ -789,7 +789,7 @@ class Database:
             return False
 
         _transdate = createSQLDate(dd, mm, yy)
-        _rem = particulars[0:min([128, len(particulars)])]
+        _rem = particulars[0:min([256, len(particulars)])]
         q = "update remarks set transdate='{}', particulars='{}' where id='{}'".format(_transdate, _rem, id)
         try:
             self.db.execute(q)
