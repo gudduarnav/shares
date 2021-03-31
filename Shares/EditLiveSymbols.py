@@ -8,7 +8,7 @@ from FinancialYear import SelectFinancialYear
 from Database import Database
 from helpers import getFinancialYearDate
 from Symbols import SelectSymbol
-
+from exchange.factory import createExchangeFromString
 
 class EditLiveSymbols:
     def __init__(self, db = None):
@@ -58,7 +58,8 @@ class EditLiveSymbols:
             [sg.Text("ID:"), sg.InputText(default_text=self.sym.getID(), readonly=True, key="ID"), sg.Button("Change Symbol", key="CHANGESYMBOL")],
             [sg.Text(self.sym.getExchange(), size=(5,1)), sg.Text(self.sym.getCompany(), size=(32,1))],
             [sg.Text("DRIVER:"),
-             sg.InputText(default_text=driver_string, size=(64,1), key="DRIVER")],
+             sg.InputText(default_text=driver_string, size=(64,1), key="DRIVER"),
+             sg.Button("TEST")],
             [sg.Button("SAVE"), sg.Button("DELETE"), sg.Button("EXIT")]
         ]
 
@@ -98,8 +99,42 @@ class EditLiveSymbols:
                         sg.PopupOK("#{} {}:{} => {} cannot be UPDATED".format(_id, self.sym.getExchange(), self.sym.getCompany(), _driver))
                     self.newWindow()
                     break
+            elif event == "TEST":
+                _id = values["ID"]
+                _driver = values["DRIVER"]
+                self.testDriver(_id, _driver)
 
         self.closeWindow()
+
+
+    def testDriver(self, id, driver):
+        layout = [
+            [sg.Text("ID:"), sg.Text(id, size=(32,1))],
+            [sg.Text("DRIVER:"), sg.Text(driver)],
+            [sg.Text("Status:"), sg.InputText(default_text="", size=(32,1), readonly=True, key="status")],
+            [sg.Text("Update Status:"), sg.InputText(default_text="", size=(16,1), readonly=True, key="updatestatus")],
+            [sg.Text("Buy Price:"), sg.InputText(default_text="", size=(16,1), readonly=True, key="buyprice")],
+            [sg.Text("Sell Price:"), sg.InputText(default_text="", size=(16,1), readonly=True, key="sellprice")],
+            [sg.Text("Average Price:"), sg.InputText(default_text="", size=(16,1), readonly=True, key="aveprice")],
+            [ sg.Button("OK")]
+        ]
+        driver= createExchangeFromString(driver)
+        w = sg.Window(title="Test Driver", layout=layout)
+        while True:
+            event, values = w.read(timeout=5)
+            if event == sg.WIN_CLOSED or event=="OK":
+                break
+            else:
+                w["status"].update(value=["Open" if driver is not None else "Failed"])
+                if driver is not None:
+                    updateStatus = driver.updatePrices()
+                    w["updatestatus"].update(value=str(updateStatus))
+                    if updateStatus:
+                        w["buyprice"].update(value=str(driver.getBuyPrice()))
+                        w["sellprice"].update(value=str(driver.getSellPrice()))
+                        w["aveprice"].update(value=str(driver.getAvePrice()))
+
+        w.close()
 
 def main():
     EditLiveSymbols()

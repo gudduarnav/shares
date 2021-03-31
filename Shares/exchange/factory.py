@@ -1,5 +1,6 @@
 import exchange.IndiaMarket as IndiaMarket
 import exchange.exchangedriver as exchangedriver
+from exchange.googlequote import GoogleQuote
 
 def createExchange(exchange, name):
     if exchange.upper() == "NSE":
@@ -7,7 +8,8 @@ def createExchange(exchange, name):
     elif exchange.upper() == "BSE":
         return IndiaMarket.BSEMarket(symbol=name)
     else:
-        return exchangedriver.ExchangeDriver(symbol=name)
+        #return exchangedriver.ExchangeDriver(symbol=name)
+        return GoogleQuote(symbol="{}:{}".format(exchange, name))
 
 def createExchangeFromString(s:str):
     s1 = ["", ""]

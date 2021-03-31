@@ -82,6 +82,7 @@ class NSEMarket(ExchangeDriver):
                     sellamt = sellamt + sell_qty*sell_price
                     sellqty = sellqty + sell_qty
 
+
             try:
                 buy_price = buyamt/buyqty
             except:
